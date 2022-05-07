@@ -1,0 +1,64 @@
+name: Example for https://discuss.ocaml.org/t/cannot-install-conf-llvm-via-opam-on-cygwin/9808
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  example:
+    if: "true" # change to false to disable this example
+    runs-on: windows-latest
+    name: Example
+    steps:
+      # STEP A
+      # ------
+      # Reproducing this on your own machine?
+      # 1. Just click the link setup-diskuv-ocaml-windows_x86_64-0.4.0.exe below
+      #    and run it! -OR-
+      # 2. Open a PowerShell window and copy-paste all the "run:" lines
+      - name: Download and install DKML (Windows-friendly Diskuv OCaml distribution)
+        shell: powershell
+        env:
+          # Simple PATH to mimic minimal Windows setup, without Cygwin!
+          PATH:
+            "C:\\Windows\\system32;\
+            C:\\Windows;\
+            C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        run: |
+          Invoke-WebRequest -OutFile setup.exe https://github.com/diskuv/dkml-installer-ocaml/releases/download/v0.4.0-prerel12/setup-diskuv-ocaml-windows_x86_64-0.4.0.exe
+          & .\setup.exe --ci -v -v
+
+      # STEP B
+      # ------
+      # Reproducing this on your own machine?
+      # YOU DON'T NEED THIS STEP!
+      # This is just a GitHub patch since its PATH configuration is unusual.
+      - name: Adjust PATH for GitHub Actions (already done by setup.exe on normal PC)
+        shell: cmd
+        run: |
+          echo %LOCALAPPDATA%\Programs\DiskuvOCaml\0\usr\bin >> $GITHUB_PATH
+          echo %LOCALAPPDATA%\Programs\DiskuvOCaml\0\bin >> $GITHUB_PATH
+
+      # STEP C
+      # ------
+      # Reproducing this on your own machine?
+      # 1. Open a **new** Command Prompt and copy-paste all the "run:" lines
+      - name: Install llvm in Opam
+        shell: cmd
+        run: |
+          REM Make an empty directory
+          mkdir example9808
+          cd example9808
+
+          REM Create a local Opam switch, and use it
+          opam dkml init
+          for /f "tokens=*" %%i in ('opam env') do @%%i
+
+          REM Install system packages ("llvm") we need.
+          REM DKML uses MSYS2, not Cygwin, so we use "pacman" to install packages.
+          REM Look at https://packages.msys2.org/package/ for which packages are available.
+          with-dkml pacman -S llvm
+
+          REM Install the OCaml "llvm" package
+          with-dkml opam install llvm
