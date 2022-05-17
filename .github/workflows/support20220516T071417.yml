@@ -1,4 +1,4 @@
-name: Example for https://discuss.ocaml.org/t/cannot-install-conf-llvm-via-opam-on-cygwin/9808
+name: Example for support AT diskuv.com
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   example:
-    if: "false" # false disables this example
+    if: "true" # false disables this example
     runs-on: windows-latest
     name: Example
     steps:
@@ -48,17 +48,15 @@ jobs:
         shell: cmd
         run: |
           REM Make an empty directory
-          mkdir example9808
-          cd example9808
+          mkdir example
+          cd example
 
           REM Create a local Opam switch, and use it
           opam dkml init
           for /f "tokens=*" %%i in ('opam env') do @%%i
 
-          REM Install system packages ("llvm") we need.
-          REM DKML uses MSYS2, not Cygwin, so we use "pacman" to install packages.
-          REM Look at https://packages.msys2.org/package/ for which packages are available.
-          with-dkml pacman -S llvm
+          REM Install any OCaml package. We use 'diskuvbox' for an easy example
+          opam install diskuvbox
 
-          REM Install the OCaml "llvm" package
-          with-dkml opam install llvm
+          REM Run the OCaml compiled binary for diskuvbox
+          diskuvbox tree -d 5 %LOCALAPPDATA%\Programs\DiskuvOCaml
