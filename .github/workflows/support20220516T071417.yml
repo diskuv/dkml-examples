@@ -37,8 +37,8 @@ jobs:
       - name: Adjust PATH for GitHub Actions (already done by setup.exe on normal PC)
         shell: cmd
         run: |
-          echo %LOCALAPPDATA%\Programs\DiskuvOCaml\0\usr\bin >> $GITHUB_PATH
-          echo %LOCALAPPDATA%\Programs\DiskuvOCaml\0\bin >> $GITHUB_PATH
+          echo %LOCALAPPDATA%\Programs\DiskuvOCaml\0\usr\bin >> %GITHUB_PATH%
+          echo %LOCALAPPDATA%\Programs\DiskuvOCaml\0\bin >> %GITHUB_PATH%
 
       # STEP C
       # ------
