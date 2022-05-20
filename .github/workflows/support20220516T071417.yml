@@ -44,7 +44,7 @@ jobs:
       # ------
       # Reproducing this on your own machine?
       # 1. Open a **new** Command Prompt and copy-paste all the "run:" lines
-      - name: Install llvm in Opam
+      - name: Install an OCaml package using Opam
         shell: cmd
         run: |
           REM Make an empty directory
