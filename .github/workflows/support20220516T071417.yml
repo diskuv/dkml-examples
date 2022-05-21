@@ -35,10 +35,10 @@ jobs:
       # YOU DON'T NEED THIS STEP!
       # This is just a GitHub patch since its PATH configuration is unusual.
       - name: Adjust PATH for GitHub Actions (already done by setup.exe on normal PC)
-        shell: cmd
+        shell: powershell
         run: |
-          echo %LOCALAPPDATA%\Programs\DiskuvOCaml\0\usr\bin >> %GITHUB_PATH%
-          echo %LOCALAPPDATA%\Programs\DiskuvOCaml\0\bin >> %GITHUB_PATH%
+          echo "$env:LOCALAPPDATA\Programs\DiskuvOCaml\0\usr\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "$env:LOCALAPPDATA\Programs\DiskuvOCaml\0\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       # STEP C
       # ------
@@ -47,6 +47,8 @@ jobs:
       - name: Install an OCaml package using Opam
         shell: cmd
         run: |
+          echo %PATH%
+
           REM Make an empty directory
           mkdir example
           cd example
